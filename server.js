@@ -1,26 +1,15 @@
 const express = require('express');
-const path = require('path');
 const app = express();
-const api = require('./routes/index');
-
+const path = require('path');
 const PORT = process.env.PORT || 3306;
+const apiRouter = require('./routes/apiRoutes');
+const htmlRouter = require('./routes/htmlRoutes');
 
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
-app.use('/api', api);
-
-app.use(express.static('public'));
-
-app.get('/', (req,res) =>
-    res.sendFile(path.join(__dirname, 'public', 'index.html'))
-);
-
-app.get('/notes', (req, res) => 
-    res.sendFile(path.join(__dirname, '/public/notes.html'))
-);
-
-app.get('*', (req, res) => res.redirect('/'));
+app.use(express.static(path.join(__dirname, '/public')));
+app.use('/api', apiRouter);
+app.use('/', htmlRouter);
 
 app.listen(PORT, () => {
-    console.log(`App is listening at http://localhost:${PORT}`);
-})
+    console.log(`Server started on port ${PORT}`);
+});
